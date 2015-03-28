@@ -148,7 +148,7 @@ app.controller('AudienceControl', ['$scope', '$sce', 'audienceRTC', '$rootScope'
       Question.addQuestion(question, username, roomname)
       .then(function(question){
         $scope.question = '';
-        $scope.confirmQuestion = 'All good!';
+        $scope.confirmQuestion = 'Question submitted.';
       });
     }
   };
@@ -384,7 +384,7 @@ app.controller('PresenterControl', ['$scope', '$sce', 'presenterRTC', '$rootScop
             .text(function(d) { return d.value; });
   };
 
-
+  
   Question.getQuestions(roomname).then(function(questions) {
     $scope.questions = questions.data;
   });
