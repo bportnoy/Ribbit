@@ -289,3 +289,7 @@ div.first a{
   background-color: #dff0d8;
   border-color: #d6e9c6;
 }
+
+.line {
+  fill: none;
+}
