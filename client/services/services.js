@@ -105,6 +105,10 @@ function roomFactory($http, $q, $timeout, $http, $location, $rootScope) {
       }).then(successCb, errorCb, notifyCb);
   };
 
+  result.endSession = function($scope, roomName){
+    return $http.post('/end', {roomName: roomName});
+  };
+
   return result;
 
 }]);
@@ -165,6 +169,22 @@ function authFactory($http, $q, $timeout, $http, $location, $rootScope) {
   return result;
 
 }]);
+
+micServices.factory('SharedData', function(){ // a little function to share data between states
+
+  var storage = {};
+
+  var set = function(key,value){
+    storage[key] = value;
+  };
+
+  var get = function(key){
+    return storage[key];
+  };
+
+  return {set: set, get: get};
+
+});
 
 micServices.factory('Question', ['$http', '$q','$timeout','$http','$location','$rootScope',
 function questionFactory($http, $q, $timeout, $http, $location, $rootScope) {

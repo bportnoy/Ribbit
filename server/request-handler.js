@@ -2,6 +2,11 @@
 var User = require('./db-user.js');
 var Question = require('./db-question.js');
 var util = require('./utility.js');
+var Firebase = require('firebase');
+var _ = require('underscore');
+
+var sessions = {};
+
 
 exports.loginUser = function(req, res){
   // console.log(req.body);
@@ -98,7 +103,58 @@ exports.checkRoom = function(req, res, rooms){
     audience : []
   };
   res.send({rooms: rooms});
-  return rooms[roomName] ;
+
+  //start logging the room
+  sessions[roomName] = {};
+  sessions[roomName].interval = logResults(roomName);
+
+  return rooms[roomName];
+};
+
+
+var logResults = function(roomName){
+  sessions[roomName].results = [];
+  var roomRef = new Firebase('https://popping-inferno-6077.firebaseio.com/').child(roomName);
+  return setInterval(function(){logSecond(roomRef, sessions[roomName].results);}, 1000);
+};
+
+var thumbMap = {
+  0: "Rockin'",
+  1: "Thumbs Up",
+  2: "Thumbs Sideways",
+  3: "Thumbs Down",
+  4: "I'm Bored"
+};
+
+var logSecond = function(roomRef, results){
+  var result = {
+    time: Date.now(),
+    "Rockin'": 0,
+    "Thumbs Up": 0,
+    "Thumbs Sideways": 0,
+    "Thumbs Down": 0,
+    "I'm Bored": 0
+  };
+
+  roomRef.once("value", function(data){
+    _.each(data.val(), function(user){
+      if (user.name){
+        var thumb = user.thumb;
+        var mapped = thumbMap[thumb];
+        result[mapped]++;
+      }
+    });
+    results.push(result);
+    console.log(results);
+  });
+};
+
+exports.endSession = function(req, res){
+  var session = sessions[req.body.roomName];
+  clearInterval(session.interval);
+  console.log('session.results');
+  console.log(session.results);
+  res.send(200, {results: session.results});
 };
 
 // If the room is available for access, return the room object

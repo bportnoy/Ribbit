@@ -148,6 +148,10 @@ app.post('/rooms', util.checkUser, function(req, res, next){
   handler.checkRoom(req, res, rooms);
 });
 
+app.post('/end', util.checkUser, function(req, res, next){
+  handler.endSession(req, res);
+});
+
 app.post('/rooms/asAudience', util.checkUser, function(req, res, next){
   // console.log('post request to /rooms/asAudience, logging req.user: ', req.user);
   // console.log('post request to /rooms/asAudience, logging req.session: ', req.session);

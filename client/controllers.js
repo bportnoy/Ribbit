@@ -229,8 +229,9 @@ app.controller('AudienceControl', ['$scope', '$sce', 'audienceRTC', '$rootScope'
 // The AudienceController utilizes $rootScope to pass user information between controllers.
 // This is not an ideal implementation, and the 'Room' service should be utilized instead.  
 
-app.controller('PresenterControl', ['$scope', '$sce', 'presenterRTC', '$rootScope',
-'$firebaseObject', 'Question', function($scope, $sce, presenterRTC, $rootScope, $firebaseObject, Question) {
+app.controller('PresenterControl', ['$scope', '$location', '$sce', 'presenterRTC', '$rootScope',
+'$firebaseObject', 'Question', 'Room', 'SharedData',
+function($scope, $location, $sce, presenterRTC, $rootScope, $firebaseObject, Question, Room, SharedData) {
 
   var addVideoElem = function (url) {
     console.log('adding video!');
@@ -255,6 +256,17 @@ app.controller('PresenterControl', ['$scope', '$sce', 'presenterRTC', '$rootScop
     {src: '../assets/noun_thumb_104590.png',value: 0, text: 'Sideways'},
     {src: '../assets/noun_thumbs-down_61036.png', value: 0, text: 'Down'},
     {src: '../assets/noun_sleep_10297.png', value: 0, text: 'I\'m Bored'}];
+
+  $scope.end = function(){
+    Room.endSession($scope, roomname)
+    .success(function(data, status, headers, config){
+      SharedData.set('result', data.results);
+      $location.path('/after');
+    })
+    .error(function(data, status, headers, config){
+      console.log('Error ending session: ' + data);
+    });
+  };
 
   $scope.pollThumbs = function(){
     //reset to 0

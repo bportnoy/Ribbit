@@ -70,6 +70,13 @@ micApp.config(['$routeProvider', '$httpProvider',
           loggedin: checkLoggedin
         }
       })
+      .when('/after', {
+        templateUrl: 'after/after.html',
+        controller: 'AfterControl',
+        resolve: {
+          loggedin: checkLoggedin
+        }
+      })
       .otherwise({
         redirectTo: '/'
       });
